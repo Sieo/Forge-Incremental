@@ -56,6 +56,18 @@ h2 {
     color: #d27d2d;
 }
 
+.log-row.achievement-log {
+    align-items: flex-start;
+    background: rgba(210, 125, 45, 0.08);
+    flex-direction: column;
+    gap: 4px;
+}
+
+.achievement-log .sale-name {
+    color: #e89b42;
+    font-weight: 700;
+}
+
 .empty-log {
     color: var(--text-muted);
     font-size: 13px;

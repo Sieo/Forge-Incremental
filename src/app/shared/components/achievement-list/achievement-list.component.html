@@ -1,0 +1,17 @@
+<section class="panel">
+    <h2>Succès</h2>
+    <div class="separator"></div>
+
+    <div class="achievement-list">
+        @for (achievement of achievementService.achievements(); track achievement.id) {
+        <div class="achievement-row" [class.obtained]="achievement.obtained">
+            <div class="achievement-heading">
+                <span class="achievement-name">{{ achievement.obtained ? '🏆' : '○' }} {{ achievement.name }}</span>
+                <span class="achievement-status">{{ achievement.obtained ? 'Obtenu' : 'À obtenir' }}</span>
+            </div>
+            <span class="achievement-description">{{ achievement.description }}</span>
+            <span class="achievement-reward">{{ achievement.rewardDescription }}</span>
+        </div>
+        }
+    </div>
+</section>

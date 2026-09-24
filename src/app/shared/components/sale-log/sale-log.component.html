@@ -7,6 +7,14 @@
     } @else {
     <div class="log">
         @for (sale of economy.sales(); track $index) {
+        @if (sale.type === 'achievement') {
+        <div class="log-row achievement-log">
+            <span class="sale-details">
+                <span class="sale-name">🏆 Succès débloqué — {{ sale.achievementName }}</span>
+                <span class="sale-quality">{{ sale.rewardText }}</span>
+            </span>
+        </div>
+        } @else {
         <div class="log-row" [class.crit]="sale.crit">
             <span class="sale-details">
                 <span class="sale-name">{{ sale.command ? '📜 Commande remplie — ' : '' }}{{ sale.crit ? '✨ Coup de
@@ -17,6 +25,7 @@
             </span>
             <span class="gain">+{{ sale.gain.toFixed(1) }} P</span>
         </div>
+        }
         }
     </div>
     }

@@ -1,4 +1,5 @@
 export interface Sale {
+    type?: 'sale';
     item: string;
     qualite: number;
     libelleQualite: string | null;
@@ -6,3 +7,11 @@ export interface Sale {
     crit: boolean;
     command?: boolean;
 }
+
+export interface AchievementLog {
+    type: 'achievement';
+    achievementName: string;
+    rewardText: string;
+}
+
+export type JournalEntry = Sale | AchievementLog;

@@ -6,14 +6,16 @@ import { ITEMS } from '../data/items.data';
 import { ItemId } from '../model/item.model';
 import { UpgradeId } from '../model/upgrade.model';
 import { GAME_RULES } from '../data/game-rules.data';
-import { Sale } from '../model/sale.model';
+import { JournalEntry } from '../model/sale.model';
+import { AchievementId } from '../model/achievement.model';
 import { PalierService } from './palier.service';
 import { UpgradeService } from './upgrade.service';
+import { AchievementService } from './achievement.service';
 
 interface PersistenceState {
     pieces: number;
     lifetimeGains: number;
-    sales: Sale[];
+    sales: JournalEntry[];
     levels: Partial<Record<UpgradeId, number>>;
     progress: number;
     selectedItemId: ItemId;
@@ -22,6 +24,8 @@ interface PersistenceState {
     commandHistory: Command[];
     salesSinceLastCommand: number;
     nextCommandThreshold: number;
+    obtainedAchievementIds: AchievementId[];
+    masterworkStreak: number;
 }
 
 const SAVE_KEY = 'forgeron_proto_save_v1';
@@ -32,6 +36,7 @@ export class PersistenceService {
     private readonly upgrades: UpgradeService = inject(UpgradeService);
     private readonly crafting: CraftingService = inject(CraftingService);
     private readonly paliers: PalierService = inject(PalierService);
+    private readonly achievements: AchievementService = inject(AchievementService);
 
     constructor() {
         this.load();
@@ -49,6 +54,8 @@ export class PersistenceService {
                 commandHistory: this.crafting.commandHistory(),
                 salesSinceLastCommand: this.crafting.salesSinceLastCommand(),
                 nextCommandThreshold: this.crafting.nextCommandThreshold(),
+                obtainedAchievementIds: this.achievements.obtainedIds(),
+                masterworkStreak: this.achievements.masterworkStreak(),
             };
 
             this.save(state);
@@ -91,6 +98,12 @@ export class PersistenceService {
             }
             if (typeof state.nextCommandThreshold === 'number') {
                 this.crafting.nextCommandThreshold.set(state.nextCommandThreshold);
+            }
+            if (Array.isArray(state.obtainedAchievementIds)) {
+                this.achievements.obtainedIds.set(state.obtainedAchievementIds);
+            }
+            if (typeof state.masterworkStreak === 'number') {
+                this.achievements.masterworkStreak.set(state.masterworkStreak);
             }
         } catch {
             localStorage.removeItem(SAVE_KEY);

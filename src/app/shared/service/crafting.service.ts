@@ -7,6 +7,7 @@ import { PalierService } from './palier.service';
 import { UpgradeService } from './upgrade.service';
 import { ITEMS } from '../data/items.data';
 import { GAME_RULES } from '../data/game-rules.data';
+import { AchievementService } from './achievement.service';
 
 export function libelleQualite(
     qualite: number,
@@ -65,6 +66,7 @@ export class CraftingService {
     private readonly economy: EconomyService = inject(EconomyService);
     private readonly upgrades: UpgradeService = inject(UpgradeService);
     private readonly paliers: PalierService = inject(PalierService);
+    private readonly achievements: AchievementService = inject(AchievementService);
 
     strike(): void {
         if (this.paliers.forgeOpened()) return;
@@ -106,7 +108,13 @@ export class CraftingService {
         const command = this.activeCommand();
         const commandCompleted = command !== null
             && command.itemId === item.id
-            && qualite >= command.qualiteMin;
+            && (
+                qualite >= command.qualiteMin
+                || (
+                    command.libelleQualiteMin === 'Exceptionnelle'
+                    && libelle === 'Exceptionnelle'
+                )
+            );
 
         if (commandCompleted) {
             this.economy.addSale({
@@ -117,6 +125,7 @@ export class CraftingService {
                 crit: estCoupDeMaitre,
                 command: true,
             });
+            this.achievements.processSale(estCoupDeMaitre, true, libelle);
             this.commandHistory.update((history) =>
                 [command, ...history].slice(0, GAME_RULES.commands.visibleHistorySize),
             );
@@ -130,6 +139,7 @@ export class CraftingService {
                 gain,
                 crit: estCoupDeMaitre,
             });
+            this.achievements.processSale(estCoupDeMaitre, false, libelle);
             this.enregistrerVentePourCommande();
         }
     }
@@ -184,6 +194,7 @@ export class CraftingService {
         this.commandHistory.set([]);
         this.salesSinceLastCommand.set(0);
         this.nextCommandThreshold.set(GAME_RULES.commands.initialThreshold);
+        this.achievements.reset();
     }
 
     genererCommande(): Command {
