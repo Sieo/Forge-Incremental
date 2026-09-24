@@ -1,34 +1,35 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { EconomyService } from './economy.service';
 import { UpgradeService } from './upgrade.service';
-
-const FORGE_INDEPENDANTE_COUT = 3000;
-const EPEE_UNLOCK_GAINS = 20;
+import { GAME_RULES } from '../data/game-rules.data';
+import { ITEM, ItemId } from '../model/item.model';
+import { UPGRADE } from '../model/upgrade.model';
 
 @Injectable({ providedIn: 'root' })
 export class PalierService {
     readonly forgeOpened = signal(false);
     readonly canOpenForge = computed(
-        () => !this.forgeOpened() && this.economy.pieces() >= FORGE_INDEPENDANTE_COUT,
+        () => !this.forgeOpened() && this.economy.pieces() >= GAME_RULES.forge.independentCost,
     );
     readonly epeeUnlocked = computed(
-        () => this.economy.lifetimeGains() >= EPEE_UNLOCK_GAINS,
+        () => this.economy.lifetimeGains() >= GAME_RULES.forge.swordUnlockLifetimeGains,
     );
-    readonly hacheUnlocked = computed(() => this.upgrades.level('equipement') >= 1);
-
+    readonly hacheUnlocked = computed(() =>
+        this.upgrades.level(UPGRADE.EQUIPEMENT) >= GAME_RULES.forge.axeUnlockEquipmentLevel,
+    );
 
     private readonly economy: EconomyService = inject(EconomyService);
     private readonly upgrades: UpgradeService = inject(UpgradeService);
 
-    isItemUnlocked(id: string): boolean {
-        if (id === 'pointes') return true;
-        if (id === 'epee') return this.epeeUnlocked();
-        if (id === 'hache') return this.hacheUnlocked();
+    isItemUnlocked(id: ItemId): boolean {
+        if (id === ITEM.POINTES) return true;
+        if (id === ITEM.EPEE) return this.epeeUnlocked();
+        if (id === ITEM.HACHE) return this.hacheUnlocked();
         return false;
     }
 
     openForge(): boolean {
-        if (!this.canOpenForge() || !this.economy.spend(FORGE_INDEPENDANTE_COUT)) {
+        if (!this.canOpenForge() || !this.economy.spend(GAME_RULES.forge.independentCost)) {
             return false;
         }
 

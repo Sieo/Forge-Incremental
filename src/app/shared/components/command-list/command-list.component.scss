@@ -1,0 +1,80 @@
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 100%;
+    padding: 16px;
+}
+
+h2 {
+    color: #eceff4;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.separator {
+    border-top: 1px solid #2a1e35;
+    width: 100%;
+}
+
+.active-command {
+    background: #111215;
+    border: 1px solid #d27d2d;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+}
+
+.command-heading,
+.history-row {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+}
+
+.command-name,
+.history-title {
+    color: #eceff4;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.command-expiry,
+.command-meta,
+.empty-command,
+.history-row {
+    color: #a3a7af;
+    font-size: 12px;
+}
+
+.command-reward {
+    color: #e89b42;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.empty-command {
+    margin: 0;
+}
+
+.history {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.history-row {
+    border-bottom: 1px solid #2a2e35;
+    padding-bottom: 8px;
+}
+
+.history-row span:last-child {
+    color: #8fb477;
+}

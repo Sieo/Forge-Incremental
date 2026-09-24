@@ -1,6 +1,11 @@
 import { effect, inject, Injectable } from '@angular/core';
 import { Sale, EconomyService } from './economy.service';
 import { CraftingService } from './crafting.service';
+import { Command } from '../model/command.model';
+import { ITEMS } from '../data/items.data';
+import { ItemId } from '../model/item.model';
+import { UpgradeId } from '../model/upgrade.model';
+import { GAME_RULES } from '../data/game-rules.data';
 import { PalierService } from './palier.service';
 import { UpgradeService } from './upgrade.service';
 
@@ -8,10 +13,14 @@ interface PersistenceState {
     pieces: number;
     lifetimeGains: number;
     sales: Sale[];
-    levels: Record<string, number>;
+    levels: Partial<Record<UpgradeId, number>>;
     progress: number;
-    selectedItemId: string;
+    selectedItemId: ItemId;
     forgeOpened: boolean;
+    activeCommand: Command | null;
+    commandHistory: Command[];
+    salesSinceLastCommand: number;
+    nextCommandThreshold: number;
 }
 
 const SAVE_KEY = 'forgeron_proto_save_v1';
@@ -35,6 +44,10 @@ export class PersistenceService {
                 progress: this.crafting.progress(),
                 selectedItemId: this.crafting.selectedItemId(),
                 forgeOpened: this.paliers.forgeOpened(),
+                activeCommand: this.crafting.activeCommand(),
+                commandHistory: this.crafting.commandHistory(),
+                salesSinceLastCommand: this.crafting.salesSinceLastCommand(),
+                nextCommandThreshold: this.crafting.nextCommandThreshold(),
             };
 
             this.save(state);
@@ -58,11 +71,25 @@ export class PersistenceService {
                 this.upgrades.levels.set({ ...this.upgrades.levels(), ...state.levels });
             }
             if (typeof state.progress === 'number') this.crafting.progress.set(state.progress);
-            if (typeof state.selectedItemId === 'string') {
+            if (state.selectedItemId && Object.hasOwn(ITEMS, state.selectedItemId)) {
                 this.crafting.selectedItemId.set(state.selectedItemId);
             }
             if (typeof state.forgeOpened === 'boolean') {
                 this.paliers.forgeOpened.set(state.forgeOpened);
+            }
+            if (state.activeCommand === null || (state.activeCommand && typeof state.activeCommand === 'object')) {
+                this.crafting.activeCommand.set(state.activeCommand ?? null);
+            }
+            if (Array.isArray(state.commandHistory)) {
+                this.crafting.commandHistory.set(
+                    state.commandHistory.slice(0, GAME_RULES.commands.visibleHistorySize),
+                );
+            }
+            if (typeof state.salesSinceLastCommand === 'number') {
+                this.crafting.salesSinceLastCommand.set(state.salesSinceLastCommand);
+            }
+            if (typeof state.nextCommandThreshold === 'number') {
+                this.crafting.nextCommandThreshold.set(state.nextCommandThreshold);
             }
         } catch {
             localStorage.removeItem(SAVE_KEY);

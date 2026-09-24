@@ -1,23 +1,24 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { EconomyService } from './economy.service';
 import { UPGRADES } from '../data/upgrades.data';
+import { UPGRADE, UpgradeId } from '../model/upgrade.model';
 
 @Injectable({ providedIn: 'root' })
 export class UpgradeService {
-    readonly levels = signal<Record<string, number>>({
-        marteau: 0,
-        talent: 0,
-        negociation: 0,
-        equipement: 0,
+    readonly levels = signal<Record<UpgradeId, number>>({
+        [UPGRADE.MARTEAU]: 0,
+        [UPGRADE.TALENT]: 0,
+        [UPGRADE.NEGOCIATION]: 0,
+        [UPGRADE.EQUIPEMENT]: 0,
     });
 
     private readonly economy: EconomyService = inject(EconomyService);
 
-    level(id: string): number {
+    level(id: UpgradeId): number {
         return this.levels()[id] ?? 0;
     }
 
-    cost(id: string): number | null {
+    cost(id: UpgradeId): number | null {
         const upgrade = UPGRADES[id];
         if (!upgrade) return null;
 
@@ -27,7 +28,7 @@ export class UpgradeService {
         return Math.round(upgrade.cost * Math.pow(upgrade.growth, level));
     }
 
-    buy(id: string): boolean {
+    buy(id: UpgradeId): boolean {
         const cost = this.cost(id);
         if (cost === null || !this.economy.spend(cost)) return false;
 
@@ -35,16 +36,16 @@ export class UpgradeService {
         return true;
     }
 
-    acheter(id: string): boolean {
+    acheter(id: UpgradeId): boolean {
         return this.buy(id);
     }
 
     reset(): void {
         this.levels.set({
-            marteau: 0,
-            talent: 0,
-            negociation: 0,
-            equipement: 0,
+            [UPGRADE.MARTEAU]: 0,
+            [UPGRADE.TALENT]: 0,
+            [UPGRADE.NEGOCIATION]: 0,
+            [UPGRADE.EQUIPEMENT]: 0,
         });
     }
 }

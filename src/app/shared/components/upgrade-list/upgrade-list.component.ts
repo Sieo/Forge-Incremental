@@ -3,6 +3,7 @@ import { UPGRADES } from '../../data/upgrades.data';
 import { EconomyService } from '../../service/economy.service';
 import { PalierService } from '../../service/palier.service';
 import { UpgradeService } from '../../service/upgrade.service';
+import { UpgradeId } from '../../model/upgrade.model';
 
 @Component({
     selector: 'app-upgrade-list',
@@ -16,7 +17,7 @@ export class UpgradeListComponent {
     readonly upgradeService = inject(UpgradeService);
     readonly paliers = inject(PalierService);
 
-    acheter(id: string): void {
+    acheter(id: UpgradeId): void {
         this.upgradeService.acheter(id);
     }
 }

@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { ForgeComponent } from './shared/components/forge/forge.component';
 import { HeaderComponent } from './core/components/header/header.component';
 import { ItemListComponent } from './shared/components/item-list/item-list.component';
+import { CommandListComponent } from './shared/components/command-list/command-list.component';
 import { ObjectivesComponent } from './shared/components/objectives/objectives.component';
 import { SaleLogComponent } from './shared/components/sale-log/sale-log.component';
 import { StatsComponent } from './shared/components/stats/stats.component';
@@ -17,6 +18,7 @@ import { PersistenceService } from './shared/service/persistence.service';
     UpgradeListComponent,
     StatsComponent,
     SaleLogComponent,
+    CommandListComponent,
   ],
   selector: 'app-root',
   styleUrl: './app.scss',

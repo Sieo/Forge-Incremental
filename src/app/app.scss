@@ -44,10 +44,10 @@ h1 {
     display: grid;
     gap: 14px;
     grid-template-areas:
-        "stats forge upgrades"
-        "items sales upgrades"
-        "objectives objectives objectives";
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+        "stats forge upgrades commands"
+        "items sales upgrades commands"
+        "objectives objectives objectives objectives";
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     margin: 0 auto;
     max-width: 1100px;
     width: 100%;
@@ -77,6 +77,10 @@ app-objectives {
     grid-area: objectives;
 }
 
+app-command-list {
+    grid-area: commands;
+}
+
 @media (max-width: 760px) {
     .panel-grid {
         grid-template-areas:
@@ -85,7 +89,8 @@ app-objectives {
             "upgrades"
             "sales"
             "items"
-            "objectives";
+            "objectives"
+            "commands";
         grid-template-columns: minmax(0, 1fr);
     }
 }

@@ -1,32 +1,53 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { Item } from '../model/item.model';
+import { ITEM, Item, ItemId } from '../model/item.model';
+import { Command } from '../model/command.model';
+import { UPGRADE } from '../model/upgrade.model';
 import { EconomyService } from './economy.service';
 import { PalierService } from './palier.service';
 import { UpgradeService } from './upgrade.service';
 import { ITEMS } from '../data/items.data';
+import { GAME_RULES } from '../data/game-rules.data';
 
 @Injectable({ providedIn: 'root' })
 export class CraftingService {
     readonly progress = signal(0);
-    readonly selectedItemId = signal('pointes');
+    readonly selectedItemId = signal<ItemId>(ITEM.POINTES);
+    readonly activeCommand = signal<Command | null>(null);
+    readonly commandHistory = signal<Command[]>([]);
+    readonly salesSinceLastCommand = signal(0);
+    readonly nextCommandThreshold = signal<number>(GAME_RULES.commands.initialThreshold);
 
     readonly currentItem = computed<Item>(() => {
         const selectedItem = ITEMS[this.selectedItemId()];
         return selectedItem && this.paliers.isItemUnlocked(selectedItem.id)
             ? selectedItem
-            : ITEMS['pointes'];
+            : ITEMS[ITEM.POINTES];
     });
-    readonly vitesse = computed(() => 1 + 0.2 * this.upgrades.level('marteau'));
+    readonly vitesse = computed(() =>
+        GAME_RULES.crafting.baseSpeed
+        + GAME_RULES.crafting.speedPerHammerLevel * this.upgrades.level(UPGRADE.MARTEAU),
+    );
     readonly coupsNecessaires = computed(() => this.coupsEffectifs(this.currentItem()));
     readonly clicsEffectues = computed(() =>
         this.clicsPourProgression(this.currentItem(), this.progress()),
     );
-    readonly plafondQualite = computed(() => 1 + 0.1 * this.upgrades.level('equipement'));
+    readonly plafondQualite = computed(() =>
+        GAME_RULES.crafting.baseQualityCeiling
+        + GAME_RULES.crafting.qualityCeilingPerEquipmentLevel * this.upgrades.level(UPGRADE.EQUIPEMENT),
+    );
     readonly qualiteMoyenne = computed(() =>
-        Math.min(0.8 + 0.04 * this.upgrades.level('talent'), this.plafondQualite()),
+        Math.min(
+            GAME_RULES.crafting.baseAverageQuality
+            + GAME_RULES.crafting.averageQualityPerTalentLevel * this.upgrades.level(UPGRADE.TALENT),
+            this.plafondQualite(),
+        ),
     );
     readonly prelevement = computed(() =>
-        Math.max(0.6 - 0.02 * this.upgrades.level('negociation'), 0.4),
+        Math.max(
+            GAME_RULES.crafting.baseLevy
+            - GAME_RULES.crafting.levyPerNegotiationLevel * this.upgrades.level(UPGRADE.NEGOCIATION),
+            GAME_RULES.crafting.minimumLevy,
+        ),
     );
 
     private readonly economy: EconomyService = inject(EconomyService);
@@ -38,26 +59,52 @@ export class CraftingService {
 
         const item = this.currentItem();
         const nextProgress = this.progress() + this.vitesse();
-        if (nextProgress < item.coups - 1e-9) {
+        if (nextProgress < item.coups - GAME_RULES.crafting.progressEpsilon) {
             this.progress.set(nextProgress);
             return;
         }
 
-        const estCoupDeMaitre = Math.random() < 0.03;
+        const estCoupDeMaitre = Math.random() < GAME_RULES.crafting.masterworkChance;
         const qualite = estCoupDeMaitre
-            ? this.plafondQualite() * (1.3 + Math.random() * 0.2)
+            ? this.plafondQualite() * (
+                GAME_RULES.crafting.masterworkQualityBase
+                + Math.random() * GAME_RULES.crafting.masterworkQualityVariation
+            )
             : Math.max(
-                0.1,
+                GAME_RULES.crafting.minimumQuality,
                 Math.min(
-                    this.qualiteMoyenne() + (Math.random() * 0.3 - 0.15),
-                    this.plafondQualite() + 0.05,
+                    this.qualiteMoyenne()
+                    + (Math.random() * GAME_RULES.crafting.qualityVariation
+                        - GAME_RULES.crafting.qualityVariation / 2),
+                    this.plafondQualite() + GAME_RULES.crafting.qualityCeilingMargin,
                 ),
             );
         const brut = item.valeur * qualite;
         const gain = brut * (1 - this.prelevement());
 
         this.progress.set(0);
-        this.economy.addSale({ item: item.name, qualite, gain, crit: estCoupDeMaitre });
+        const command = this.activeCommand();
+        const commandCompleted = command !== null
+            && command.itemId === item.id
+            && qualite >= command.qualiteMin;
+
+        if (commandCompleted) {
+            this.economy.addSale({
+                item: item.name,
+                qualite,
+                gain: gain + command.recompense,
+                crit: estCoupDeMaitre,
+                command: true,
+            });
+            this.commandHistory.update((history) =>
+                [command, ...history].slice(0, GAME_RULES.commands.visibleHistorySize),
+            );
+            this.activeCommand.set(null);
+            this.salesSinceLastCommand.set(0);
+        } else {
+            this.economy.addSale({ item: item.name, qualite, gain, crit: estCoupDeMaitre });
+            this.enregistrerVentePourCommande();
+        }
     }
 
     frapper(): void {
@@ -69,7 +116,7 @@ export class CraftingService {
         let progress = 0;
         let clics = 0;
 
-        while (progress < item.coups - 1e-9) {
+        while (progress < item.coups - GAME_RULES.crafting.progressEpsilon) {
             progress += vitesse;
             clics += 1;
         }
@@ -82,7 +129,7 @@ export class CraftingService {
         let progress = 0;
         let clics = 0;
 
-        while (progress < progression - 1e-9 && clics < this.coupsEffectifs(item)) {
+        while (progress < progression - GAME_RULES.crafting.progressEpsilon && clics < this.coupsEffectifs(item)) {
             progress += vitesse;
             clics += 1;
         }
@@ -90,7 +137,7 @@ export class CraftingService {
         return clics;
     }
 
-    selectItem(id: string): boolean {
+    selectItem(id: ItemId): boolean {
         const item = ITEMS[id];
         if (!item || !this.paliers.isItemUnlocked(id)) return false;
 
@@ -99,12 +146,56 @@ export class CraftingService {
         return true;
     }
 
-    selectionner(id: string): boolean {
+    selectionner(id: ItemId): boolean {
         return this.selectItem(id);
     }
 
     reset(): void {
         this.progress.set(0);
-        this.selectedItemId.set('pointes');
+        this.selectedItemId.set(ITEM.POINTES);
+        this.activeCommand.set(null);
+        this.commandHistory.set([]);
+        this.salesSinceLastCommand.set(0);
+        this.nextCommandThreshold.set(GAME_RULES.commands.initialThreshold);
+    }
+
+    genererCommande(): Command {
+        const candidats: ItemId[] = [ITEM.POINTES, ITEM.EPEE, ITEM.HACHE]
+            .filter((id) => this.paliers.isItemUnlocked(id));
+        const itemId = candidats[Math.floor(Math.random() * candidats.length)];
+        const item = ITEMS[itemId];
+        const qualiteMin = this.qualiteMoyenne() * (
+            GAME_RULES.commands.qualityMultiplierBase
+            + Math.random() * GAME_RULES.commands.qualityMultiplierVariation
+        );
+        this.nextCommandThreshold.set(
+            GAME_RULES.commands.minimumThreshold
+            + Math.floor(Math.random() * GAME_RULES.commands.thresholdRange),
+        );
+
+        return {
+            itemId,
+            qualiteMin,
+            recompense: item.valeur * qualiteMin * 1.5,
+            salesUntilExpire: GAME_RULES.commands.salesUntilExpire,
+        };
+    }
+
+    private enregistrerVentePourCommande(): void {
+        const command = this.activeCommand();
+        if (command) {
+            const salesUntilExpire = command.salesUntilExpire - 1;
+            this.activeCommand.set(
+                salesUntilExpire > 0 ? { ...command, salesUntilExpire } : null,
+            );
+            return;
+        }
+
+        const salesSinceLastCommand = this.salesSinceLastCommand() + 1;
+        this.salesSinceLastCommand.set(salesSinceLastCommand);
+        if (salesSinceLastCommand >= this.nextCommandThreshold()) {
+            this.activeCommand.set(this.genererCommande());
+            this.salesSinceLastCommand.set(0);
+        }
     }
 }

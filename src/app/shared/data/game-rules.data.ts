@@ -1,0 +1,38 @@
+export const GAME_RULES = {
+    forge: {
+        independentCost: 3000,
+        swordUnlockLifetimeGains: 20,
+        axeUnlockEquipmentLevel: 1,
+    },
+    crafting: {
+        baseSpeed: 1,
+        speedPerHammerLevel: 0.2,
+        baseQualityCeiling: 1,
+        qualityCeilingPerEquipmentLevel: 0.1,
+        baseAverageQuality: 0.8,
+        averageQualityPerTalentLevel: 0.04,
+        baseLevy: 0.6,
+        levyPerNegotiationLevel: 0.02,
+        minimumLevy: 0.4,
+        masterworkChance: 0.03,
+        masterworkQualityBase: 1.3,
+        masterworkQualityVariation: 0.2,
+        qualityVariation: 0.3,
+        minimumQuality: 0.1,
+        qualityCeilingMargin: 0.05,
+        progressEpsilon: 1e-9,
+    },
+    commands: {
+        initialThreshold: 8,
+        minimumThreshold: 5,
+        thresholdRange: 6,
+        qualityMultiplierBase: 1.05,
+        qualityMultiplierVariation: 0.15,
+        rewardMultiplier: 1.5,
+        salesUntilExpire: 15,
+        visibleHistorySize: 6,
+    },
+    display: {
+        visibleSalesSize: 6,
+    },
+} as const;

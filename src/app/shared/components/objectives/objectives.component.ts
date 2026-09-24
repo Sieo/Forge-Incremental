@@ -2,8 +2,7 @@ import { DecimalPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { EconomyService } from '../../service/economy.service';
 import { PalierService } from '../../service/palier.service';
-
-const FORGE_OBJECTIVE = 3000;
+import { GAME_RULES } from '../../data/game-rules.data';
 
 @Component({
     imports: [DecimalPipe],
@@ -16,9 +15,9 @@ export class ObjectivesComponent {
     readonly economy = inject(EconomyService);
     readonly paliers = inject(PalierService);
     readonly modalVisible = signal(false);
-    readonly progress = computed(() => Math.min(this.economy.pieces(), FORGE_OBJECTIVE));
-    readonly progressPercent = computed(() => (this.progress() / FORGE_OBJECTIVE) * 100);
-    readonly objective = FORGE_OBJECTIVE;
+    readonly progress = computed(() => Math.min(this.economy.pieces(), GAME_RULES.forge.independentCost));
+    readonly progressPercent = computed(() => (this.progress() / GAME_RULES.forge.independentCost) * 100);
+    readonly objective = GAME_RULES.forge.independentCost;
 
     openForge(): void {
         if (this.paliers.openForge()) {

@@ -1,0 +1,29 @@
+<section class="panel">
+    <h2>Commandes</h2>
+    <div class="separator"></div>
+
+    @if (crafting.activeCommand(); as command) {
+    <div class="active-command">
+        <div class="command-heading">
+            <span class="command-name">{{ items[command.itemId].name }}</span>
+            <span class="command-expiry">{{ command.salesUntilExpire }} ventes</span>
+        </div>
+        <div class="command-meta">Qualité min. {{ command.qualiteMin.toFixed(2) }}x</div>
+        <div class="command-reward">+{{ command.recompense.toFixed(1) }} P</div>
+    </div>
+    } @else {
+    <p class="empty-command">Aucune commande active.</p>
+    }
+
+    @if (crafting.commandHistory().length > 0) {
+    <div class="history">
+        <span class="history-title">Dernières commandes</span>
+        @for (command of crafting.commandHistory(); track $index) {
+        <div class="history-row">
+            <span>{{ items[command.itemId].name }}</span>
+            <span>+{{ command.recompense.toFixed(1) }} P</span>
+        </div>
+        }
+    </div>
+    }
+</section>
