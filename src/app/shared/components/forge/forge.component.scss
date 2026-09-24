@@ -1,0 +1,96 @@
+.panel {
+    background: var(--panel);
+    border: 1px solid #d27d2d;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 16px;
+}
+
+.forge-heading {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+h2 {
+    color: #d27d2d;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.65px;
+    margin: 0;
+}
+
+.forge-item {
+    color: #eceff4;
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.separator {
+    border-top: 1px solid #2a1e35;
+    width: 100%;
+}
+
+.progress-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.progress-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.progress-title {
+    color: #a3a7af;
+    font-size: 14px;
+}
+
+.progress-count {
+    color: #eceff4;
+    font-size: 20px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.progress-track {
+    background: var(--track);
+    border-radius: 7px;
+    height: 14px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: var(--accent);
+    height: 100%;
+    transition: width 150ms ease;
+}
+
+.progress-label {
+    color: var(--text-muted);
+    font-size: 12px;
+    text-align: right;
+}
+
+.forge-btn {
+    background: var(--accent);
+    border: 0;
+    border-radius: 12px;
+    color: var(--accent-text);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 22px 16px;
+    width: 100%;
+}
+
+.forge-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}

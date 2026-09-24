@@ -1,0 +1,33 @@
+<section class="panel">
+    <h2>Objectives</h2>
+    <div class="separator"></div>
+
+    <div class="objective-heading">
+        <span>Économiser pour ouvrir sa forge indépendante</span>
+        <span class="objective-value">{{ economy.pieces() | number:'1.1-1' }} / {{ objective }} P</span>
+    </div>
+
+    <div class="progress-track" role="progressbar" aria-label="Progression vers l'ouverture de la forge"
+        [attr.aria-valuenow]="progress()" [attr.aria-valuemin]="0" [attr.aria-valuemax]="objective">
+        <div class="progress-bar" [style.width.%]="progressPercent()"></div>
+    </div>
+
+    @if (paliers.canOpenForge()) {
+    <button class="open-forge-btn" type="button" (click)="openForge()">
+        Ouvrir sa forge
+    </button>
+    } @else if (paliers.forgeOpened()) {
+    <p class="objective-complete">Forge indépendante ouverte</p>
+    }
+</section>
+
+@if (modalVisible()) {
+<div class="modal-backdrop" role="presentation" (click)="closeModal()">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"
+        (click)="$event.stopPropagation()">
+        <h2 id="modal-title">Félicitations</h2>
+        <p>Tu as complété la version 1 du jeu. Ta forge indépendante est maintenant ouverte.</p>
+        <button class="modal-close-btn" type="button" (click)="closeModal()">Continuer</button>
+    </section>
+</div>
+}

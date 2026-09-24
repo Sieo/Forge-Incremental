@@ -1,0 +1,20 @@
+<section class="panel">
+    <h2>Dernières ventes</h2>
+    <div class="separator"></div>
+
+    @if (economy.sales().length === 0) {
+    <p class="empty-log">Rien vendu pour l'instant.</p>
+    } @else {
+    <div class="log">
+        @for (sale of economy.sales(); track $index) {
+        <div class="log-row" [class.crit]="sale.crit">
+            <span class="sale-details">
+                <span class="sale-name">{{ sale.crit ? '✨ Coup de maître - ' : '' }}{{ sale.item }}</span>
+                <span class="sale-quality"> - qualité {{ sale.qualite.toFixed(2) }}x</span>
+            </span>
+            <span class="gain">+{{ sale.gain.toFixed(1) }} P</span>
+        </div>
+        }
+    </div>
+    }
+</section>

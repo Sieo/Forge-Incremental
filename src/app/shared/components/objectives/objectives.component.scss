@@ -1,0 +1,102 @@
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+}
+
+h2 {
+    color: #eceff4;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.separator {
+    border-top: 1px solid #2a1e35;
+    width: 100%;
+}
+
+.objective-heading {
+    align-items: center;
+    color: #a3a7af;
+    display: flex;
+    font-size: 13px;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+.objective-value {
+    color: #eceff4;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.progress-track {
+    background: #111215;
+    border: 1px solid #2a2e35;
+    border-radius: 6px;
+    height: 12px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: #d27d2d;
+    height: 100%;
+    transition: width 180ms ease-out;
+}
+
+.open-forge-btn,
+.modal-close-btn {
+    background: rgba(210, 125, 45, 0.122);
+    border: 1px solid #d27d2d;
+    border-radius: 8px;
+    color: #e89b42;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 12px;
+    width: 100%;
+}
+
+.objective-complete {
+    color: #8fb477;
+    font-size: 13px;
+    margin: 0;
+    text-align: center;
+}
+
+.modal-backdrop {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.68);
+    display: flex;
+    inset: 0;
+    justify-content: center;
+    padding: 20px;
+    position: fixed;
+    z-index: 10;
+}
+
+.modal {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.4);
+    color: #a3a7af;
+    max-width: 420px;
+    padding: 24px;
+    width: 100%;
+}
+
+.modal h2 {
+    margin-bottom: 12px;
+}
+
+.modal p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 20px;
+}

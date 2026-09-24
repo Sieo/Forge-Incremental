@@ -1,0 +1,22 @@
+<section class="panel">
+    <div class="forge-heading">
+        <h2>TRAVAIL EN COURS</h2>
+        <div class="forge-item">{{ crafting.currentItem().name }}</div>
+    </div>
+
+    <div class="separator"></div>
+
+    <div class="progress-area">
+        <div class="progress-header">
+            <span class="progress-title">Martelage</span>
+            <span class="progress-count">{{ crafting.clicsEffectues() }} / {{ crafting.coupsNecessaires() }}</span>
+        </div>
+        <div class="progress-track" aria-label="Progression de la fabrication">
+            <div class="progress-fill" [style.width.%]="progressPercent()"></div>
+        </div>
+    </div>
+
+    <button class="forge-btn" type="button" [disabled]="paliers.forgeOpened()" (click)="frapper()">
+        {{ paliers.forgeOpened() ? 'Forge fermée' : 'Frapper le fer' }}
+    </button>
+</section>

@@ -1,0 +1,91 @@
+:host {
+    --bg: #f6f3ec;
+    --panel: #181a1f;
+    --panel-border: #2a1e35;
+    --text: #2a2620;
+    --text-muted: #7a7365;
+    --accent: #b4531f;
+    --accent-text: #ffffff;
+    --accent-soft: #f1e2d3;
+    --good: #4c6b3c;
+    --locked: #b9b2a0;
+    --track: #eae3d4;
+    background: #111215;
+    color: var(--text);
+    display: block;
+    min-height: 100dvh;
+}
+
+.wrap {
+    background: #111215;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 0 auto;
+    min-height: calc(100dvh - 80px);
+    padding: 32px;
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 4px 0 -10px;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin: 0;
+}
+
+.panel-grid {
+    align-items: start;
+    display: grid;
+    gap: 14px;
+    grid-template-areas:
+        "stats forge upgrades"
+        "items sales upgrades"
+        "objectives objectives objectives";
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0 auto;
+    max-width: 1100px;
+    width: 100%;
+}
+
+app-stats {
+    grid-area: stats;
+}
+
+app-upgrade-list {
+    grid-area: upgrades;
+}
+
+app-item-list {
+    grid-area: items;
+}
+
+app-forge {
+    grid-area: forge;
+}
+
+app-sale-log {
+    grid-area: sales;
+}
+
+app-objectives {
+    grid-area: objectives;
+}
+
+@media (max-width: 760px) {
+    .panel-grid {
+        grid-template-areas:
+            "stats"
+            "forge"
+            "upgrades"
+            "sales"
+            "items"
+            "objectives";
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

@@ -1,0 +1,27 @@
+<section class="panel">
+    <h2>Upgrades</h2>
+    <div class="separator"></div>
+
+    <div class="upgrade-list">
+        @for (upgrade of upgrades; track upgrade.id) {
+        @let level = upgradeService.level(upgrade.id);
+        @let cost = upgradeService.cost(upgrade.id);
+        <div class="upgrade-row">
+            <div class="upgrade-heading">
+                <span class="upgrade-name">{{ upgrade.name }}</span>
+                <span class="upgrade-level">Niv. {{ level }}</span>
+            </div>
+            <div class="upgrade-meta">{{ upgrade.desc }}</div>
+            <button class="buy-btn" type="button"
+                [disabled]="cost === null || economy.pieces() < cost || paliers.canOpenForge() || paliers.forgeOpened()"
+                (click)="acheter(upgrade.id)">
+                <span class="buy-label">{{ cost === null ? 'Max' : 'Acheter' }}</span>
+                @if (cost !== null) {
+                <span class="buy-price"><span class="price-value">{{ cost }}</span> <span
+                        class="price-currency">P</span></span>
+                }
+            </button>
+        </div>
+        }
+    </div>
+</section>

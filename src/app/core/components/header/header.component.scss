@@ -1,0 +1,58 @@
+:host {
+    display: block;
+}
+
+.header {
+    align-items: center;
+    background: #181a1f;
+    box-sizing: border-box;
+    color: #eceff4;
+    display: flex;
+    height: 80px;
+    justify-content: space-between;
+    padding: 0 40px;
+    width: 100%;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.player-info {
+    align-items: center;
+    display: flex;
+    gap: 14px;
+}
+
+.rank {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.version {
+    border: 1px solid #4c566a;
+    border-radius: 999px;
+    color: #d8dee9;
+    font-size: 12px;
+    padding: 5px 10px;
+}
+
+@media (max-width: 560px) {
+    .header {
+        padding: 0 20px;
+    }
+
+    .title {
+        font-size: 18px;
+    }
+
+    .player-info {
+        gap: 8px;
+    }
+
+    .rank {
+        font-size: 12px;
+    }
+}

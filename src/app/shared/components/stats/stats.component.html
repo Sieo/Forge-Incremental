@@ -1,0 +1,26 @@
+<section class="panel">
+    <h2>Statistiques</h2>
+    <div class="separator"></div>
+
+    <div class="primary-stat">
+        <span class="primary-label">Pièces</span>
+        <span class="primary-value">{{ economy.pieces().toFixed(1) }}</span>
+    </div>
+
+    <div class="separator"></div>
+
+    <div class="secondary-stats">
+        <div class="secondary-stat">
+            <span class="secondary-label">Prélèvement du patron</span>
+            <span class="secondary-value">{{ (crafting.prelevement() * 100).toFixed(0) }}%</span>
+        </div>
+        <div class="secondary-stat">
+            <span class="secondary-label">Qualité moyenne</span>
+            <span class="secondary-value">{{ crafting.qualiteMoyenne().toFixed(2) }}x</span>
+        </div>
+        <div class="secondary-stat">
+            <span class="secondary-label">Plafond de qualité</span>
+            <span class="secondary-value">{{ crafting.plafondQualite().toFixed(2) }}x</span>
+        </div>
+    </div>
+</section>

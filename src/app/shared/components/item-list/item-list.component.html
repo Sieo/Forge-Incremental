@@ -1,0 +1,26 @@
+<section class="panel">
+    <h2>Items</h2>
+    <div class="separator"></div>
+
+    <div class="item-list">
+        @for (item of items; track item.id) {
+        @let unlocked = paliers.isItemUnlocked(item.id);
+        <button class="item-row" [class.selected]="item.id === crafting.selectedItemId()" [class.locked]="!unlocked"
+            type="button" [disabled]="!unlocked" (click)="selectionner(item.id)">
+            <span class="item-content">
+                <span class="item-name">{{ item.name }}</span>
+                @if (unlocked) {
+                <span class="item-meta">{{ crafting.coupsEffectifs(item) }} coups</span>
+                } @else if (item.id === 'epee') {
+                <span class="item-meta">Débloqué à 20 pièces gagnées</span>
+                } @else {
+                <span class="item-meta">Débloqué avec Équipement niveau 1</span>
+                }
+            </span>
+            @if (unlocked) {
+            <span class="item-gain">{{ item.valeur }} pièces</span>
+            }
+        </button>
+        }
+    </div>
+</section>

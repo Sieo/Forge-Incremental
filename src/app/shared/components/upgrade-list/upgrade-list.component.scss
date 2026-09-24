@@ -1,0 +1,106 @@
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+}
+
+h2 {
+    color: #eceff4;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.separator {
+    border-top: 1px solid #2a1e35;
+    width: 100%;
+}
+
+.upgrade-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.upgrade-row {
+    background: #111215;
+    border: 1px solid #2a2e35;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+}
+
+.upgrade-heading {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.upgrade-name {
+    color: #eceff4;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.upgrade-level {
+    background: #2a1e35;
+    border-radius: 4px;
+    color: #eceff4;
+    font-size: 12px;
+    padding: 2px 6px;
+}
+
+.upgrade-meta {
+    color: #a3a7af;
+    font-size: 12px;
+}
+
+.buy-btn {
+    align-items: center;
+    background: rgba(210, 125, 45, 0.122);
+    border: 1px solid #d27d2d;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 12px;
+    width: 100%;
+}
+
+.buy-btn:disabled {
+    background: #24262b;
+    border-color: var(--locked);
+    cursor: not-allowed;
+    opacity: 0.85;
+}
+
+.buy-btn:disabled .buy-label,
+.buy-btn:disabled .price-value,
+.buy-btn:disabled .price-currency {
+    color: var(--locked);
+}
+
+.buy-label {
+    color: #e89b42;
+}
+
+.buy-price {
+    color: #eceff4;
+}
+
+.price-value {
+    color: #eceff4;
+}
+
+.price-currency {
+    color: #e89b42;
+}
