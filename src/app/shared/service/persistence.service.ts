@@ -1,11 +1,12 @@
 import { effect, inject, Injectable } from '@angular/core';
-import { Sale, EconomyService } from './economy.service';
+import { EconomyService } from './economy.service';
 import { CraftingService } from './crafting.service';
 import { Command } from '../model/command.model';
 import { ITEMS } from '../data/items.data';
 import { ItemId } from '../model/item.model';
 import { UpgradeId } from '../model/upgrade.model';
 import { GAME_RULES } from '../data/game-rules.data';
+import { Sale } from '../model/sale.model';
 import { PalierService } from './palier.service';
 import { UpgradeService } from './upgrade.service';
 

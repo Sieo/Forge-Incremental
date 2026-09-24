@@ -8,6 +8,18 @@ import { UpgradeService } from './upgrade.service';
 import { ITEMS } from '../data/items.data';
 import { GAME_RULES } from '../data/game-rules.data';
 
+export function libelleQualite(
+    qualite: number,
+    qualiteMoyenne: number,
+    variance: number,
+): string {
+    const ecart = (qualite - qualiteMoyenne) / variance;
+    if (ecart >= 0.5) return 'Exceptionnelle';
+    if (ecart >= 0) return 'Très bonne';
+    if (ecart >= -0.5) return 'Bonne';
+    return 'Médiocre';
+}
+
 @Injectable({ providedIn: 'root' })
 export class CraftingService {
     readonly progress = signal(0);
@@ -65,6 +77,7 @@ export class CraftingService {
         }
 
         const estCoupDeMaitre = Math.random() < GAME_RULES.crafting.masterworkChance;
+        const qualiteMoyenneAuTirage = this.qualiteMoyenne();
         const qualite = estCoupDeMaitre
             ? this.plafondQualite() * (
                 GAME_RULES.crafting.masterworkQualityBase
@@ -73,7 +86,7 @@ export class CraftingService {
             : Math.max(
                 GAME_RULES.crafting.minimumQuality,
                 Math.min(
-                    this.qualiteMoyenne()
+                    qualiteMoyenneAuTirage
                     + (Math.random() * GAME_RULES.crafting.qualityVariation
                         - GAME_RULES.crafting.qualityVariation / 2),
                     this.plafondQualite() + GAME_RULES.crafting.qualityCeilingMargin,
@@ -81,6 +94,13 @@ export class CraftingService {
             );
         const brut = item.valeur * qualite;
         const gain = brut * (1 - this.prelevement());
+        const libelle = estCoupDeMaitre
+            ? null
+            : libelleQualite(
+                qualite,
+                qualiteMoyenneAuTirage,
+                GAME_RULES.crafting.qualityVariation / 2,
+            );
 
         this.progress.set(0);
         const command = this.activeCommand();
@@ -92,6 +112,7 @@ export class CraftingService {
             this.economy.addSale({
                 item: item.name,
                 qualite,
+                libelleQualite: libelle,
                 gain: gain + command.recompense,
                 crit: estCoupDeMaitre,
                 command: true,
@@ -102,7 +123,13 @@ export class CraftingService {
             this.activeCommand.set(null);
             this.salesSinceLastCommand.set(0);
         } else {
-            this.economy.addSale({ item: item.name, qualite, gain, crit: estCoupDeMaitre });
+            this.economy.addSale({
+                item: item.name,
+                qualite,
+                libelleQualite: libelle,
+                gain,
+                crit: estCoupDeMaitre,
+            });
             this.enregistrerVentePourCommande();
         }
     }
@@ -164,7 +191,8 @@ export class CraftingService {
             .filter((id) => this.paliers.isItemUnlocked(id));
         const itemId = candidats[Math.floor(Math.random() * candidats.length)];
         const item = ITEMS[itemId];
-        const qualiteMin = this.qualiteMoyenne() * (
+        const qualiteMoyenneAuTirage = this.qualiteMoyenne();
+        const qualiteMin = qualiteMoyenneAuTirage * (
             GAME_RULES.commands.qualityMultiplierBase
             + Math.random() * GAME_RULES.commands.qualityMultiplierVariation
         );
@@ -176,6 +204,11 @@ export class CraftingService {
         return {
             itemId,
             qualiteMin,
+            libelleQualiteMin: libelleQualite(
+                qualiteMin,
+                qualiteMoyenneAuTirage,
+                GAME_RULES.crafting.qualityVariation / 2,
+            ),
             recompense: item.valeur * qualiteMin * 1.5,
             salesUntilExpire: GAME_RULES.commands.salesUntilExpire,
         };

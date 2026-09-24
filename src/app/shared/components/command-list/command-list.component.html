@@ -8,7 +8,9 @@
             <span class="command-name">{{ items[command.itemId].name }}</span>
             <span class="command-expiry">{{ command.salesUntilExpire }} ventes</span>
         </div>
-        <div class="command-meta">Qualité min. {{ command.qualiteMin.toFixed(2) }}x</div>
+        <div class="command-meta" [title]="'Qualité minimale exacte : ' + command.qualiteMin.toFixed(2) + 'x'">
+            Qualité min. {{ command.libelleQualiteMin || 'qualité élevée' }}
+        </div>
         <div class="command-reward">+{{ command.recompense.toFixed(1) }} P</div>
     </div>
     } @else {

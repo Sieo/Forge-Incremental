@@ -1,13 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { GAME_RULES } from '../data/game-rules.data';
-
-export interface Sale {
-    item: string;
-    qualite: number;
-    gain: number;
-    crit: boolean;
-    command?: boolean;
-}
+import { Sale } from '../model/sale.model';
 
 @Injectable({ providedIn: 'root' })
 export class EconomyService {
